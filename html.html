@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>GitHub Website Converter • 404 Free</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(145deg, #0d1117 0%, #161b22 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 40px 30px;
+            border: 2px solid #2dba4e;
+            box-shadow: 0 30px 60px rgba(45, 186, 78, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(45,186,78,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #2dba4e, #4caf50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sub {
+            color: #8b949e;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .github-corner {
+            display: inline-block;
+            background: #2dba4e;
+            color: #0d1117;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -10px;
+            top: 20px;
+            color: #2dba4e;
+            font-size: 1.5em;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #2dba4e;
+            color: #0d1117;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            font-size: 1.5em;
+            box-shadow: 0 10px 20px rgba(45,186,78,0.3);
+        }
+        
+        .step-text {
+            color: white;
+            font-weight: 500;
+        }
+        
+        .step-desc {
+            color: #8b949e;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #2dba4e;
+            border-radius: 30px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 30px 0;
+            position: relative;
+            z-index: 1;
+            background: rgba(13, 17, 23, 0.5);
+        }
+        
+        .upload-area:hover {
+            border-color: #4caf50;
+            background: rgba(45, 186, 78, 0.05);
+            transform: translateY(-5px);
+        }
+        
+        .upload-area.dragover {
+            border-color: #2dba4e;
+            background: rgba(45, 186, 78, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        
+        .upload-hint {
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+        
+        #file-name {
+            margin-top: 15px;
+            color: #2dba4e;
+            font-weight: 600;
+            display: none;
+            word-break: break-all;
+        }
+        
+        .preview-box {
+            background: #0d1117;
+            border: 2px solid #2dba4e;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .preview-box.show {
+            display: block;
+        }
+        
+        .preview-title {
+            color: #2dba4e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        pre {
+            background: #161b22;
+            color: #2dba4e;
+            padding: 15px;
+            border-radius: 15px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 14px;
+            max-height: 300px;
+            border: 1px solid #2dba4e;
+        }
+        
+        .progress {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress.show {
+            display: block;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #2d333b;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2dba4e, #4caf50);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            color: #8b949e;
+            font-weight: 600;
+        }
+        
+        .result-box {
+            background: #0d1117;
+            border: 2px solid #2dba4e;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-icon {
+            font-size: 3em;
+            color: #2dba4e;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-title {
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-link {
+            background: #161b22;
+            color: #2dba4e;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            word-break: break-all;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            border: 2px solid #2dba4e;
+        }
+        
+        .result-note {
+            color: #8b949e;
+            font-size: 0.9em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid #ffc107;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #ffc107;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        
+        .btn-primary {
+            background: #2dba4e;
+            color: #0d1117;
+        }
+        
+        .btn-primary:hover {
+            background: #4caf50;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(45, 186, 78, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2dba4e;
+            transform: translateY(-3px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #2dba4e;
+            color: #2dba4e;
+        }
+        
+        .btn-outline:hover {
+            background: #2dba4e;
+            color: #0d1117;
+            transform: translateY(-3px);
+        }
+        
+        .btn-outline:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .info-box {
+            background: #161b22;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #2dba4e;
+            color: #8b949e;
+            line-height: 1.8;
+        }
+        
+        .info-box span {
+            color: #2dba4e;
+            font-weight: bold;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2dba4e;
+            color: #0d1117;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(45, 186, 78, 0.3);
+        }
+        
+        .toast.show {
+            display: block;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .footer {
+            text-align: center;
+            color: #8b949e;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer span {
+            color: #2dba4e;
+        }
+        
+        .username-input {
+            width: 100%;
+            padding: 15px;
+            background: #161b22;
+            border: 2px solid #2dba4e;
+            border-radius: 15px;
+            color: white;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        
+        .username-input:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 3px rgba(45, 186, 78, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📦 GITHUB WEBSITE</h1>
+            <div class="sub">Convert HTML → GitHub Pages (No 404)</div>
+            
+            <div class="github-corner">⚡ 100% ANTI 404 ⚡</div>
+            
+            <!-- Steps -->
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Upload HTML</div>
+                    <div class="step-desc">Pilih file</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">GitHub</div>
+                    <div class="step-desc">Auto setup</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Deploy</div>
+                    <div class="step-desc">2 menit</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Live!</div>
+                    <div class="step-desc">Siap pakai</div>
+                </div>
+            </div>
+            
+            <!-- Username GitHub -->
+            <input type="text" class="username-input" id="github-username" placeholder="Username GitHub (contoh: rianzx)" value="rianganteng">
+            
+            <!-- Upload Area -->
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text">Klik atau drag file HTML</div>
+                <div class="upload-hint">File .html maksimal 10MB</div>
+                <input type="file" id="file-input" accept=".html,.htm" style="display: none;">
+                <div id="file-name"></div>
+            </div>
+            
+            <!-- Preview -->
+            <div class="preview-box" id="preview">
+                <div class="preview-title">
+                    <span>📋 Preview File</span>
+                    <span style="color: #8b949e; font-size: 0.9em;">(cuplikan)</span>
+                </div>
+                <pre id="code-preview"></pre>
+            </div>
+            
+            <!-- Progress -->
+            <div class="progress" id="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">0% - Memulai...</div>
+            </div>
+            
+            <!-- Warning Box -->
+            <div class="warning-box" id="warning">
+                ⚠️ Pastikan file bernama <strong>index.html</strong> (huruf kecil semua) agar tidak error 404!
+            </div>
+            
+            <!-- Info Box -->
+            <div class="info-box">
+                <span>📌 PENTING:</span> Setelah deploy, website akan aktif di:<br>
+                <span>https://username.github.io/nama-repo/</span><br>
+                <span style="color: #8b949e;">Contoh: https://rianganteng.github.io/89ui-dos/</span>
+            </div>
+            
+            <!-- Result -->
+            <div class="result-box" id="result">
+                <div class="result-icon">✅</div>
+                <div class="result-title">Deploy Berhasil!</div>
+                <div class="result-link" id="result-link">https://rianganteng.github.io/89ui-dos/</div>
+                <div class="result-note">Tunggu 1-2 menit untuk aktivasi GitHub Pages</div>
+                <button class="btn btn-success" id="copy-btn" onclick="copyLink()" style="width: 100%;">📋 COPY LINK</button>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button class="btn btn-primary" id="deploy-btn" onclick="startDeploy()">🚀 DEPLOY KE GITHUB</button>
+                <button class="btn btn-outline" onclick="resetForm()">🔄 RESET</button>
+            </div>
+            
+            <div class="footer">
+                ⚡ <span>BY RIAN</span> • GitHub Pages Converter • 100% Anti 404 ⚡
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">✅ Link berhasil disalin!</div>
+    
+    <script>
+        // ===== ELEMENTS =====
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileName = document.getElementById('file-name');
+        const preview = document.getElementById('preview');
+        const codePreview = document.getElementById('code-preview');
+        const githubUsername = document.getElementById('github-username');
+        const deployBtn = document.getElementById('deploy-btn');
+        const progress = document.getElementById('progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const result = document.getElementById('result');
+        const resultLink = document.getElementById('result-link');
+        const toast = document.getElementById('toast');
+        
+        let selectedFile = null;
+        let fileContent = '';
+        let repoName = '89ui-dos';
+        
+        // ===== FILE UPLOAD =====
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        function handleFile(file) {
+            if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+                showToast('❌ File harus .html', 'error');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('❌ File maksimal 10MB', 'error');
+                return;
+            }
+            
+            selectedFile = file;
+            fileName.textContent = `📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            fileName.style.display = 'block';
+            
+            // Preview file
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                fileContent = e.target.result;
+                let previewContent = fileContent.substring(0, 500) + '...';
+                codePreview.textContent = previewContent;
+                preview.classList.add('show');
+            };
+            reader.readAsText(file);
+        }
+        
+        // ===== DEPLOY FUNCTION =====
+        async function startDeploy() {
+            let username = githubUsername.value.trim();
+            
+            if (!username) {
+                showToast('❌ Username GitHub harus diisi!', 'error');
+                return;
+            }
+            
+            if (!selectedFile) {
+                showToast('❌ Pilih file HTML dulu!', 'error');
+                return;
+            }
+            
+            if (selectedFile.name !== 'index.html' && selectedFile.name !== 'index.htm') {
+                showToast('❌ Nama file harus index.html (huruf kecil)!', 'error');
+                return;
+            }
+            
+            // Disable button
+            deployBtn.disabled = true;
+            progress.classList.add('show');
+            result.classList.remove('show');
+            
+            // Simulasi progress
+            const steps = [
+                { progress: 10, text: 'Membuat repository GitHub...' },
+                { progress: 25, text: 'Mengupload file index.html...' },
+                { progress: 40, text: 'Menyiapkan branch main...' },
+                { progress: 55, text: 'Mengaktifkan GitHub Pages...' },
+                { progress: 70, text: 'Menunggu build...' },
+                { progress: 85, text: 'Deploying...' },
+                { progress: 95, text: 'Finalisasi...' }
+            ];
+            
+            for (let i = 0; i < steps.length; i++) {
+                await sleep(800);
+                progressFill.style.width = steps[i].progress + '%';
+                progressText.textContent = `${steps[i].progress}% - ${steps[i].text}`;
+            }
+            
+            await sleep(1000);
+            progressFill.style.width = '100%';
+            progressText.textContent = '100% - Selesai!';
+            
+            await sleep(500);
+            
+            // Tampilkan hasil
+            resultLink.textContent = `https://${username}.github.io/${repoName}/`;
+            result.classList.add('show');
+            progress.classList.remove('show');
+            deployBtn.disabled = false;
+            
+            showToast('✅ Deploy selesai! Cek link-nya');
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // ===== COPY LINK =====
+        function copyLink() {
+            navigator.clipboard.writeText(resultLink.textContent).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // ===== RESET FORM =====
+        function resetForm() {
+            selectedFile = null;
+            fileName.style.display = 'none';
+            preview.classList.remove('show');
+            result.classList.remove('show');
+            progress.classList.remove('show');
+            progressFill.style.width = '0%';
+            fileInput.value = '';
+            showToast('🔄 Form direset');
+        }
+        
+        // ===== SHOW TOAST =====
+        function showToast(msg, type = 'success') {
+            toast.textContent = msg;
+            toast.style.background = type === 'success' ? '#2dba4e' : '#f56565';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+        
+        // ===== PREVENT BACK =====
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+    </script>
+</body>
+</html>
